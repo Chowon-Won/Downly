@@ -41,7 +41,16 @@ jobs:
           DOWNLY_KEY_PASSWORD: ${{ secrets.DOWNLY_KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --stacktrace
+          set +e
+          ./gradlew assembleRelease --stacktrace 2>&1 | tee build.log
+          code=${PIPESTATUS[0]}
+          if [ $code -ne 0 ]; then
+            # Resumen de errores como anotación (visible sin abrir el log completo)
+            errs=$(grep -E "^e: |What went wrong|Could not (find|resolve)|> [A-Z].*(failed|not found)|error:" build.log | head -25 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=Errores de compilación::${errs}"
+            grep -A6 "What went wrong" build.log | head -40 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}' | xargs -0 -I{} echo "::error title=Gradle::{}"
+          fi
+          exit $code
 
       - name: Renombrar APKs
         run: |
