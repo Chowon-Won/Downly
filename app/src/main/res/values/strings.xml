@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Downly</string>
+    <!-- ID de app de PRUEBA de AdMob. Cámbialo por el tuyo antes de publicar. -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="channel_downloads">Descargas</string>
+    <string name="channel_downloads_desc">Progreso de tus descargas</string>
+</resources>
